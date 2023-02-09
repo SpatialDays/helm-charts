@@ -1,0 +1,67 @@
+USER-SUPPLIED VALUES:
+server:
+  env:
+  - name: APP_DEBUG
+    value: "True"
+  - name: APP_REQUIRE_AUTH
+    value: "False"
+  - name: APP_RESULT_DIR
+    value: /data/
+  - name: GIT_BRANCH
+    value: master
+  - name: AWS_S3_ENDPOINT
+    value: http://s3-uk-1.sa-catapult.co.uk
+  - name: AWS_END_POINT
+    value: http://s3-uk-1.sa-catapult.co.uk
+  - name: AWS_NO_SIGN_REQUEST
+    value: "YES"
+  - name: AWS_VIRTUAL_HOSTING
+    value: "FALSE"
+  - name: DATACUBE_DB_HOSTNAME
+    value: datacubedb-postgresql.datacubedb.svc.cluster.local
+  - name: DATACUBE_DB_DATABASE
+    value: datacube
+  image:
+    tag: 1a941a5
+  ingress:
+    annotations:
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+    enabled: false
+    hosts:
+    - host: cubequery.sa-catapult.co.uk
+      paths:
+      - /
+    tls:
+    - hosts:
+      - cubequery.sa-catapult.co.uk
+      secretName: sa
+  service:
+    type: ClusterIP
+  usersConf: |
+    # User, password hash (bcrypt), allowed addresses
+    basic,$2b$12$LJxr6ilLLg.wSfiFGLp1w.s1A6H23z/6oV6qlcA/4..HoZNjMi/Uy,127.0.0.1;10.*;192.*
+worker:
+  env:
+  - name: APP_DEBUG
+    value: "True"
+  - name: APP_RESULT_DIR
+    value: /home/celery/data
+  - name: APP_EXTRA_PATH
+    value: /home/celery/code_path
+  - name: GIT_REPO_DIR
+    value: /home/celery/repo
+  - name: GIT_BRANCH
+    value: master
+  - name: AWS_NO_SIGN_REQUEST
+    value: "YES"
+  - name: APP_RESULT_URL
+    value: http://10.21.16.82:8080
+  - name: AWS_VIRTUAL_HOSTING
+    value: "FALSE"
+  - name: AWS_S3_ENDPOINT
+    value: http://s3-uk-1.sa-catapult.co.uk
+  - name: REDIS_URL
+    value: redis://redis-master.cubequery.svc.cluster.local:6379
+  image:
+    tag: 1a941a5
+  replicaCount: 3
