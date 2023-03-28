@@ -6,6 +6,10 @@ In order to use the deployment material described here you need access to a Kube
 
 The solution provided here is suitable to deploy the API to produce on-demand data products, leveraging an [Open Data Cube](https://www.opendatacube.org/).
 
+## Dask deployment
+helm repo add dask https://helm.dask.org/
+helm install dask dask/dask --namespace cubequery --set jupyter.enabled=false
+
 ## Redis Master server deployment
 
 It's necessary to first create a *values-redis.yaml* file. As example, for a development environment we might have:
