@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dask-scheduler
+  namespace: dask
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dask
+      component: scheduler
+  template:
+    metadata:
+      labels:
+        app: dask
+        component: scheduler
+    spec:
+      containers:
+        - name: dask-scheduler
+          image: satapps/dask-datacube:v3.2.22
+          command:
+            - dask-scheduler
+          args:
+            - "--port"
+            - "8786"
+            - "--bokeh-port"
+            - "8787"
+          resources:
+            requests:
+              cpu: "1800m"
+              memory: "4G"
+            limits:
+              cpu: "1800m"
+              memory: "6G"
+          ports:
+            - containerPort: 8786
+            - containerPort: 8787

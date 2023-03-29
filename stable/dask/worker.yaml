@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dask-worker
+  namespace: dask
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dask
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: dask
+        component: worker
+    spec:
+      containers:
+        - name: dask-worker
+          image: satapps/dask-datacube:v3.2.22
+          command:
+            - dask-worker
+          args:
+            - dask-scheduler:8786
+            - "--nthreads"
+            - "3"
+            - "--memory-limit"
+            - "20G"
+            - "--no-dashboard"
+          resources:
+            requests:
+              cpu: "3"
+              memory: "16G"
+            limits:
+              cpu: "3"
+              memory: "20G"
+          env:
+            - name: EXTRA_PIP_PACKAGES
+              value: git+https://github.com/SatelliteApplicationsCatapult/datacube-utilities.git#egg=datacube_utilities
+            - name: AWS_NO_SIGN_REQUEST
+              value: "YES"
+            - name: AWS_VIRTUAL_HOSTING
+              value: "FALSE"
+            - name: AWS_S3_ENDPOINT
+              value: http://s3-proxy
+            - name: AWS_ACCESS_KEY_ID
+              value: fake
+            - name: AWS_SECRET_ACCESS_KEY
+              value: fake
+            - name: AWS_DEFAULT_REGION
+              value: us-west-2
+          ports:
+            - containerPort: 8789
